@@ -1,0 +1,27 @@
+services:
+  postgres:
+    image: docker.io/library/postgres:16
+    container_name: estokio-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres_dev_only}
+      POSTGRES_DB: ${POSTGRES_DB:-estokio}
+      ESTOKIO_MIGRATOR_PASSWORD: ${ESTOKIO_MIGRATOR_PASSWORD:-migrator_dev_only}
+      ESTOKIO_APP_USER_PASSWORD: ${ESTOKIO_APP_USER_PASSWORD:-app_user_dev_only}
+      ESTOKIO_APP_PLATFORM_PASSWORD: ${ESTOKIO_APP_PLATFORM_PASSWORD:-app_platform_dev_only}
+    ports:
+      # 5432 ja esta em uso por um Postgres nativo do sistema nesta maquina;
+      # o Postgres do projeto roda containerizado em outra porta do host.
+      - "${ESTOKIO_DB_PORT:-5433}:5432"
+    volumes:
+      - estokio_pgdata:/var/lib/postgresql/data
+      - ./infra/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-estokio}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  estokio_pgdata:
