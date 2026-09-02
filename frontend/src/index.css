@@ -1,0 +1,20 @@
+@import 'tailwindcss';
+@import './styles/tokens.css';
+
+@layer base {
+  body {
+    @apply bg-paper text-ink font-body antialiased;
+  }
+
+  ::selection {
+    @apply bg-accent-soft;
+  }
+}
+
+@layer components {
+  /* Rótulo mono, letter-spacing largo, tudo maiúsculo -- usado em labels de
+     formulário, badges de status e cabeçalhos de coluna em todas as telas. */
+  .tag {
+    @apply font-mono text-[11px] tracking-[0.08em] uppercase;
+  }
+}
