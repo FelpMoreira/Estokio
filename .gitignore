@@ -25,6 +25,10 @@ replay_pid*
 
 estokio-vault/
 
+# Fonte de trabalho dos mockups de design (skill /design) -- referência local,
+# o entregável é o canvas publicado como Artifact, não este diretório.
+frontend-mockups/
+
 # Maven
 backend/target/
 backend/dependency-reduced-pom.xml
