@@ -1,0 +1,41 @@
+/*
+ * Sistema de design "Ledger Industrial" -- valores extraídos ao pé da letra dos
+ * mockups aprovados (frontend-mockups/*.dc.html). Não arredondar para um grid
+ * 4/8px nem trocar por cores "parecidas": os tokens abaixo são a fonte da verdade
+ * visual do projeto, compartilhados pelas três superfícies (vitrine pública,
+ * painel da loja, painel da plataforma).
+ *
+ * Tailwind v4 gera utilities automaticamente a partir do namespace --color-* /
+ * --font-* dentro de @theme (ex.: --color-paper vira bg-paper/text-paper/border-paper).
+ */
+@theme {
+  --color-paper: oklch(97% 0.012 75);
+  --color-paper-dim: oklch(94% 0.016 70);
+  --color-ink: oklch(24% 0.02 55);
+  --color-ink-soft: oklch(46% 0.02 55);
+  --color-ink-faint: oklch(64% 0.016 55);
+  --color-line: oklch(85% 0.02 70);
+  --color-line-strong: oklch(75% 0.025 65);
+  --color-accent: oklch(58% 0.15 45);
+  --color-accent-strong: oklch(46% 0.16 38);
+  --color-accent-soft: oklch(93% 0.035 55);
+  --color-panel-dark: oklch(22% 0.018 55);
+  --color-panel-dark-soft: oklch(28% 0.02 55);
+  --color-line-dark: oklch(34% 0.02 55);
+  --color-on-dark: oklch(93% 0.01 75);
+  --color-on-dark-soft: oklch(66% 0.02 65);
+
+  /* Só aparecem em VitrineLoja.dc.html no mockup, mas fazem parte do mesmo
+     sistema de design (indicam disponibilidade de estoque) -- mantidos aqui
+     centralizados para quando o catálogo real existir (Fase 1). */
+  --color-stock-ok: oklch(55% 0.13 145);
+  --color-stock-ok-soft: oklch(94% 0.03 150);
+  --color-stock-low: oklch(58% 0.15 45);
+  --color-stock-low-soft: oklch(93% 0.035 55);
+  --color-stock-out: oklch(58% 0.01 70);
+  --color-stock-out-soft: oklch(92% 0.006 70);
+
+  --font-display: 'Archivo', system-ui, sans-serif;
+  --font-body: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
