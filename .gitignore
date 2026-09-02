@@ -27,6 +27,7 @@ estokio-vault/
 
 # Maven
 backend/target/
+backend/dependency-reduced-pom.xml
 
 # IDE
 .idea/
