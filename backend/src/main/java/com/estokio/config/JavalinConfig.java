@@ -22,7 +22,7 @@ public final class JavalinConfig {
                 .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
         return Javalin.create(config -> {
             config.showJavalinBanner = false;
-            config.jsonMapper(new JavalinJackson(mapper));
+            config.jsonMapper(new JavalinJackson(mapper, false));
             CorsConfig.aplicar(config);
         });
     }
