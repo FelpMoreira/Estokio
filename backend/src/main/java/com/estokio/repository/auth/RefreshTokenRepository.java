@@ -42,6 +42,23 @@ public final class RefreshTokenRepository {
                 .findOne());
     }
 
+    /**
+     * Valida e revoga o token numa unica instrucao (compare-and-swap via WHERE):
+     * duas requisicoes concorrentes com o mesmo token bruto nunca revogam a mesma
+     * linha duas vezes nem emitem dois pares de token a partir do mesmo refresh.
+     * So retorna a linha se ela ainda estava valida no momento da revogacao.
+     */
+    public Optional<RefreshToken> consumirSeValido(String tokenHash, Instant agora) {
+        return jdbi.withHandle(handle -> handle.createQuery(
+                        "UPDATE refresh_token SET revogado_em = :agora "
+                                + "WHERE token_hash = :tokenHash AND revogado_em IS NULL AND expira_em > :agora "
+                                + "RETURNING " + COLUNAS)
+                .bind("tokenHash", tokenHash)
+                .bind("agora", agora)
+                .mapTo(RefreshToken.class)
+                .findOne());
+    }
+
     /** Revogacao explicita (logout, rotacao no refresh, comprometimento). Nunca apaga a linha. */
     public void revogar(UUID id) {
         jdbi.useHandle(handle -> handle.execute(
