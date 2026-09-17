@@ -20,6 +20,19 @@ public final class AuthController {
     public void registrar(Javalin app) {
         app.post("/api/auth/login", this::login);
         app.post("/api/auth/refresh", this::refresh);
+        app.post("/api/auth/registro-cliente", this::registroCliente);
+    }
+
+    private void registroCliente(Context ctx) {
+        RegistroClienteRequest corpo = ctx.bodyValidator(RegistroClienteRequest.class)
+                .check(r -> r.nome() != null && !r.nome().isBlank(), "nome e obrigatorio")
+                .check(r -> r.email() != null && !r.email().isBlank(), "email e obrigatorio")
+                .check(r -> r.senha() != null && r.senha().length() >= 8, "senha deve ter ao menos 8 caracteres")
+                .get();
+
+        AuthService.TokenPair par = authService.registrarCliente(
+                corpo.nome().trim(), corpo.email().trim().toLowerCase(), corpo.senha());
+        ctx.status(201).json(new TokenResponse(par.accessToken(), par.refreshToken()));
     }
 
     private void login(Context ctx) {
@@ -42,6 +55,9 @@ public final class AuthController {
     }
 
     private record LoginRequest(String email, String senha) {
+    }
+
+    private record RegistroClienteRequest(String nome, String email, String senha) {
     }
 
     private record RefreshRequest(String refreshToken) {
