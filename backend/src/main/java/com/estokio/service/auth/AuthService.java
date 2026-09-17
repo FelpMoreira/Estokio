@@ -1,5 +1,6 @@
 package com.estokio.service.auth;
 
+import com.estokio.domain.user.Papel;
 import com.estokio.domain.user.RefreshToken;
 import com.estokio.domain.user.Usuario;
 import com.estokio.exception.ApiException;
@@ -10,6 +11,7 @@ import com.estokio.security.PasswordEncoder;
 
 import java.time.Instant;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Login (email + senha via BCrypt) e refresh (rotaciona o refresh token persistido)
@@ -48,6 +50,29 @@ public final class AuthService {
         }
 
         return emitirPar(usuario.get());
+    }
+
+    /**
+     * Registro público de cliente (spec seção 11: {@code POST /api/auth/registro-cliente}).
+     * Cliente é papel global ({@code tenant_id null}, ver {@link Papel}) -- um único
+     * cadastro compra em várias lojas. Já autentica ao final, mesma resposta do login.
+     */
+    public TokenPair registrarCliente(String nome, String email, String senha) {
+        if (usuarioRepository.buscarPorEmail(email).isPresent()) {
+            throw ApiException.conflito("EMAIL_JA_CADASTRADO", "Já existe uma conta com este email.");
+        }
+
+        Usuario usuario = usuarioRepository.inserir(new Usuario(
+                UUID.randomUUID(),
+                null,
+                nome,
+                email,
+                PasswordEncoder.hash(senha),
+                Papel.CLIENTE,
+                true,
+                Instant.now()));
+
+        return emitirPar(usuario);
     }
 
     public TokenPair refresh(String refreshTokenBruto) {
