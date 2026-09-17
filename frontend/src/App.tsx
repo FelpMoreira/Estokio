@@ -3,6 +3,7 @@ import { RotaProtegida } from './auth/RotaProtegida';
 import { LayoutPainelLoja } from './layouts/LayoutPainelLoja';
 import { LayoutPainelPlataforma } from './layouts/LayoutPainelPlataforma';
 import { LoginPage } from './pages/LoginPage';
+import { RegistroPage } from './pages/RegistroPage';
 import { VitrineLojaPage } from './pages/VitrineLojaPage';
 import { VitrinePlataformaPage } from './pages/VitrinePlataformaPage';
 import { DashboardPage as DashboardLojaPage } from './pages/loja/DashboardPage';
@@ -14,6 +15,7 @@ function App() {
       <Route path="/" element={<VitrinePlataformaPage />} />
       <Route path="/l/:slug" element={<VitrineLojaPage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/registro" element={<RegistroPage />} />
 
       <Route
         path="/loja"
