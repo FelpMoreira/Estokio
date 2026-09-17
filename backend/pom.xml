@@ -164,28 +164,14 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.2</version>
-                <configuration>
-                    <!--
-                        Este ambiente de dev nao tem `docker`, so `podman` rootless (ver
-                        com.estokio.PostgresTestBase). Testcontainers detecta o daemon via
-                        DOCKER_HOST (env var) resolvido a partir de DefaultDockerClientConfig,
-                        que NAO le o classpath resource `testcontainers.properties` para essa
-                        decisao especifica (so para outras configuracoes); testado manualmente
-                        e confirmado que so a env var funciona de forma confiavel aqui. Por isso
-                        a configuracao fica aqui, nao num arquivo de properties, para `mvn test`
-                        funcionar sem exigir export manual toda vez.
-
-                        Ryuk (o container de limpeza automatica do Testcontainers) e desabilitado
-                        porque tem problemas conhecidos rodando sob podman rootless sem privilegio
-                        extra; aceitavel em dev, so significa que os containers de teste nao sao
-                        removidos automaticamente ao final (fica para um `podman rm -f` manual ou
-                        reinicio da sessao).
-                    -->
-                    <environmentVariables>
-                        <DOCKER_HOST>unix://${env.XDG_RUNTIME_DIR}/podman/podman.sock</DOCKER_HOST>
-                        <TESTCONTAINERS_RYUK_DISABLED>true</TESTCONTAINERS_RYUK_DISABLED>
-                    </environmentVariables>
-                </configuration>
+                <!--
+                    Testcontainers precisa de um daemon Docker real (ou compatível, ex: podman
+                    rootless). Este projeto já rodou em dev com podman, exigindo aqui
+                    DOCKER_HOST=unix://$XDG_RUNTIME_DIR/podman/podman.sock e
+                    TESTCONTAINERS_RYUK_DISABLED=true, ambos removidos porque a máquina atual
+                    tem Docker de verdade e não precisa de nenhum dos dois. Se voltar a rodar só
+                    com podman, recoloque essas duas variáveis em environmentVariables.
+                -->
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
