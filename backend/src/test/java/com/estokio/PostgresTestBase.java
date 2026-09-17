@@ -1,5 +1,9 @@
 package com.estokio;
 
+import com.estokio.domain.catalog.Produto;
+import com.estokio.domain.inventory.EstoqueMovimento;
+import com.estokio.domain.inventory.EstoqueSaldo;
+import com.estokio.domain.inventory.EstoqueSaldoResumo;
 import com.estokio.domain.tenant.Plan;
 import com.estokio.domain.tenant.Tenant;
 import com.estokio.domain.user.RefreshToken;
@@ -115,6 +119,12 @@ public abstract class PostgresTestBase {
         // exatamente DatabaseConfig#registrarMappers, usado pela aplicacao real.
         jdbi.registerRowMapper(ConstructorMapper.factory(Tenant.class));
         jdbi.registerRowMapper(ConstructorMapper.factory(Plan.class));
+        // Espelha DatabaseConfig#registrarMappers (Fase 1, item 2). Variacao fica de fora:
+        // atributos e jsonb, mapeado manualmente em VariacaoRepository.
+        jdbi.registerRowMapper(ConstructorMapper.factory(Produto.class));
+        jdbi.registerRowMapper(ConstructorMapper.factory(EstoqueSaldo.class));
+        jdbi.registerRowMapper(ConstructorMapper.factory(EstoqueMovimento.class));
+        jdbi.registerRowMapper(ConstructorMapper.factory(EstoqueSaldoResumo.class));
         return jdbi;
     }
 
