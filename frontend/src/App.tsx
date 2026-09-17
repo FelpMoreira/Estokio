@@ -8,6 +8,7 @@ import { VitrineLojaPage } from './pages/VitrineLojaPage';
 import { VitrinePlataformaPage } from './pages/VitrinePlataformaPage';
 import { DashboardPage as DashboardLojaPage } from './pages/loja/DashboardPage';
 import { DashboardPage as DashboardPlataformaPage } from './pages/plataforma/DashboardPage';
+import { LojasPage } from './pages/plataforma/LojasPage';
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
         }
       >
         <Route index element={<DashboardPlataformaPage />} />
+        <Route path="lojas" element={<LojasPage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />
