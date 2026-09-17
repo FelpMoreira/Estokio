@@ -7,6 +7,8 @@ import { RegistroPage } from './pages/RegistroPage';
 import { VitrineLojaPage } from './pages/VitrineLojaPage';
 import { VitrinePlataformaPage } from './pages/VitrinePlataformaPage';
 import { DashboardPage as DashboardLojaPage } from './pages/loja/DashboardPage';
+import { EstoquePage } from './pages/loja/EstoquePage';
+import { ProdutosPage } from './pages/loja/ProdutosPage';
 import { DashboardPage as DashboardPlataformaPage } from './pages/plataforma/DashboardPage';
 import { LojasPage } from './pages/plataforma/LojasPage';
 
@@ -27,6 +29,8 @@ function App() {
         }
       >
         <Route index element={<DashboardLojaPage />} />
+        <Route path="produtos" element={<ProdutosPage />} />
+        <Route path="estoque" element={<EstoquePage />} />
       </Route>
 
       <Route

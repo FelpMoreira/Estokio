@@ -1,5 +1,9 @@
 package com.estokio.config;
 
+import com.estokio.domain.catalog.Produto;
+import com.estokio.domain.inventory.EstoqueMovimento;
+import com.estokio.domain.inventory.EstoqueSaldo;
+import com.estokio.domain.inventory.EstoqueSaldoResumo;
 import com.estokio.domain.tenant.Plan;
 import com.estokio.domain.tenant.Tenant;
 import com.estokio.domain.user.RefreshToken;
@@ -60,6 +64,13 @@ public final class DatabaseConfig {
         jdbi.registerRowMapper(ConstructorMapper.factory(RefreshToken.class));
         jdbi.registerRowMapper(ConstructorMapper.factory(Tenant.class));
         jdbi.registerRowMapper(ConstructorMapper.factory(Plan.class));
+        // Variacao NAO entra aqui: atributos e jsonb, e ConstructorMapper nao sabe
+        // converter texto em Map<String, String> (ver VariacaoRepository, que mapeia
+        // manualmente via ResultSet).
+        jdbi.registerRowMapper(ConstructorMapper.factory(Produto.class));
+        jdbi.registerRowMapper(ConstructorMapper.factory(EstoqueSaldo.class));
+        jdbi.registerRowMapper(ConstructorMapper.factory(EstoqueMovimento.class));
+        jdbi.registerRowMapper(ConstructorMapper.factory(EstoqueSaldoResumo.class));
     }
 
     private static DataSource construirDataSource(String usuario, String senha, int poolMaximo) {

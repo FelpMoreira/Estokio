@@ -3,10 +3,15 @@ package com.estokio;
 import com.estokio.config.DatabaseConfig;
 import com.estokio.config.JavalinConfig;
 import com.estokio.controller.AuthController;
+import com.estokio.controller.EstoqueController;
 import com.estokio.controller.PlataformaController;
+import com.estokio.controller.ProdutoController;
 import com.estokio.exception.GlobalExceptionHandler;
 import com.estokio.repository.auth.RefreshTokenRepository;
 import com.estokio.repository.auth.UsuarioRepository;
+import com.estokio.repository.catalog.ProdutoRepository;
+import com.estokio.repository.catalog.VariacaoRepository;
+import com.estokio.repository.inventory.EstoqueRepository;
 import com.estokio.repository.tenant.PlanoRepository;
 import com.estokio.repository.tenant.TenantRepository;
 import com.estokio.security.JwtService;
@@ -14,6 +19,8 @@ import com.estokio.security.RoleMiddleware;
 import com.estokio.security.TenantContext;
 import com.estokio.security.TenantMiddleware;
 import com.estokio.service.auth.AuthService;
+import com.estokio.service.catalog.ProdutoService;
+import com.estokio.service.inventory.EstoqueService;
 import com.estokio.service.tenant.TenantService;
 import io.javalin.Javalin;
 import org.jdbi.v3.core.Jdbi;
@@ -63,6 +70,16 @@ public final class Main {
                 appPlatformJdbi, tenantRepository, planoRepository, usuarioRepositoryPlataforma);
         PlataformaController plataformaController = new PlataformaController(tenantService);
 
+        // /api/loja/**: sujeito a RLS (ver Multi-Tenancy e RLS), sempre via appUserJdbi.
+        ProdutoRepository produtoRepository = new ProdutoRepository();
+        VariacaoRepository variacaoRepository = new VariacaoRepository();
+        EstoqueRepository estoqueRepository = new EstoqueRepository();
+        ProdutoService produtoService = new ProdutoService(
+                appUserJdbi, produtoRepository, variacaoRepository, estoqueRepository);
+        EstoqueService estoqueService = new EstoqueService(appUserJdbi, estoqueRepository);
+        ProdutoController produtoController = new ProdutoController(produtoService);
+        EstoqueController estoqueController = new EstoqueController(estoqueService);
+
         Javalin app = JavalinConfig.criar();
         GlobalExceptionHandler.registrar(app);
 
@@ -76,6 +93,8 @@ public final class Main {
 
         authController.registrar(app);
         plataformaController.registrar(app);
+        produtoController.registrar(app);
+        estoqueController.registrar(app);
 
         int porta = Integer.parseInt(env("ESTOKIO_HTTP_PORT", "7000"));
         app.start(porta);
