@@ -22,6 +22,7 @@ export interface AuthContextValor {
   /** true enquanto a sessão está sendo restaurada a partir do refresh token salvo. */
   restaurandoSessao: boolean;
   login(email: string, senha: string): Promise<ClaimsAccessToken>;
+  registrar(nome: string, email: string, senha: string): Promise<ClaimsAccessToken>;
   logout(): void;
 }
 
@@ -79,17 +80,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [accessToken]);
 
+  // Persiste o par de tokens e o email digitado (login e registro terminam
+  // exatamente da mesma forma: ambos autenticam a sessão ao final).
+  function autenticarComPar(par: ParDeTokens, emailDigitado: string): ClaimsAccessToken {
+    definirAccessToken(par.access_token);
+    definirRefreshTokenArmazenado(par.refresh_token);
+    definirEmailArmazenado(emailDigitado);
+    setEmail(emailDigitado);
+    return jwtDecode<ClaimsAccessToken>(par.access_token);
+  }
+
   const login = useCallback(async (emailDigitado: string, senha: string) => {
     const par = await apiFetch<ParDeTokens>('/api/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email: emailDigitado, senha }),
       semAutenticacao: true,
     });
-    definirAccessToken(par.access_token);
-    definirRefreshTokenArmazenado(par.refresh_token);
-    definirEmailArmazenado(emailDigitado);
-    setEmail(emailDigitado);
-    return jwtDecode<ClaimsAccessToken>(par.access_token);
+    return autenticarComPar(par, emailDigitado);
+  }, []);
+
+  const registrar = useCallback(async (nome: string, emailDigitado: string, senha: string) => {
+    const par = await apiFetch<ParDeTokens>('/api/auth/registro-cliente', {
+      method: 'POST',
+      body: JSON.stringify({ nome, email: emailDigitado, senha }),
+      semAutenticacao: true,
+    });
+    return autenticarComPar(par, emailDigitado);
   }, []);
 
   const logout = useCallback(() => {
@@ -98,8 +114,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const valor = useMemo<AuthContextValor>(
-    () => ({ claims, email, restaurandoSessao, login, logout }),
-    [claims, email, restaurandoSessao, login, logout],
+    () => ({ claims, email, restaurandoSessao, login, registrar, logout }),
+    [claims, email, restaurandoSessao, login, registrar, logout],
   );
 
   return <AuthContext.Provider value={valor}>{children}</AuthContext.Provider>;
