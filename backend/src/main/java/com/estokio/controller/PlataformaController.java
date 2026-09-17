@@ -7,6 +7,7 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 /**
  * Rotas exclusivas do Super Admin (Fase 1, item 1 -- ver Fase 1 - MVP e Papeis e Permissoes).
@@ -15,6 +16,9 @@ import java.util.UUID;
  * {@link PapelRole#SUPER_ADMIN} explicitamente por clareza/defesa em profundidade.
  */
 public final class PlataformaController {
+
+    /** Slug e chave de roteamento publica (GET /api/lojas/{slug}, /l/:slug) -- so minusculas/digitos/hifen. */
+    private static final Pattern FORMATO_SLUG = Pattern.compile("^[a-z0-9]+(-[a-z0-9]+)*$");
 
     private final TenantService tenantService;
 
@@ -41,10 +45,21 @@ public final class PlataformaController {
                 .check(r -> r.loja() != null, "loja e obrigatoria")
                 .check(r -> r.admin() != null, "admin e obrigatorio")
                 .check(r -> r.loja() != null && !isEmBranco(r.loja().nome()), "loja.nome e obrigatorio")
+                .check(r -> r.loja() == null || r.loja().nome() == null || r.loja().nome().trim().length() <= 150,
+                        "loja.nome deve ter no maximo 150 caracteres")
                 .check(r -> r.loja() != null && !isEmBranco(r.loja().slug()), "loja.slug e obrigatorio")
+                .check(r -> r.loja() == null || r.loja().slug() == null || r.loja().slug().trim().length() <= 150,
+                        "loja.slug deve ter no maximo 150 caracteres")
+                .check(r -> r.loja() == null || isEmBranco(r.loja().slug())
+                                || FORMATO_SLUG.matcher(r.loja().slug().trim().toLowerCase()).matches(),
+                        "loja.slug deve conter apenas letras minusculas, numeros e hifen (ex: loja-bonita)")
                 .check(r -> r.loja() != null && r.loja().planoId() != null, "loja.planoId e obrigatorio")
                 .check(r -> r.admin() != null && !isEmBranco(r.admin().nome()), "admin.nome e obrigatorio")
+                .check(r -> r.admin() == null || r.admin().nome() == null || r.admin().nome().trim().length() <= 150,
+                        "admin.nome deve ter no maximo 150 caracteres")
                 .check(r -> r.admin() != null && !isEmBranco(r.admin().email()), "admin.email e obrigatorio")
+                .check(r -> r.admin() == null || r.admin().email() == null || r.admin().email().trim().length() <= 255,
+                        "admin.email deve ter no maximo 255 caracteres")
                 .check(r -> r.admin() != null && r.admin().senha() != null && r.admin().senha().length() >= 8,
                         "admin.senha deve ter ao menos 8 caracteres")
                 .get();
