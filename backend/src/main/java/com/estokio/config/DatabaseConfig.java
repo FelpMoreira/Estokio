@@ -1,5 +1,7 @@
 package com.estokio.config;
 
+import com.estokio.domain.tenant.Plan;
+import com.estokio.domain.tenant.Tenant;
 import com.estokio.domain.user.RefreshToken;
 import com.estokio.domain.user.Usuario;
 import com.zaxxer.hikari.HikariConfig;
@@ -56,6 +58,8 @@ public final class DatabaseConfig {
     private static void registrarMappers(Jdbi jdbi) {
         jdbi.registerRowMapper(ConstructorMapper.factory(Usuario.class));
         jdbi.registerRowMapper(ConstructorMapper.factory(RefreshToken.class));
+        jdbi.registerRowMapper(ConstructorMapper.factory(Tenant.class));
+        jdbi.registerRowMapper(ConstructorMapper.factory(Plan.class));
     }
 
     private static DataSource construirDataSource(String usuario, String senha, int poolMaximo) {
