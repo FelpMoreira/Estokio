@@ -3,6 +3,7 @@ package com.estokio.security;
 import com.estokio.exception.ApiException;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
+import io.javalin.http.HandlerType;
 import io.javalin.security.RouteRole;
 
 import java.util.Set;
@@ -17,6 +18,12 @@ public final class RoleMiddleware implements Handler {
 
     @Override
     public void handle(Context ctx) {
+        // Mesmo motivo do TenantMiddleware: preflight de CORS nao carrega identidade
+        // nenhuma (TenantContext nunca foi populado para este request OPTIONS).
+        if (ctx.method() == HandlerType.OPTIONS) {
+            return;
+        }
+
         Set<RouteRole> papeisPermitidos = ctx.routeRoles();
         if (papeisPermitidos.isEmpty()) {
             return;
