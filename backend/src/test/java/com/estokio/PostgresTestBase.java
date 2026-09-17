@@ -1,5 +1,7 @@
 package com.estokio;
 
+import com.estokio.domain.tenant.Plan;
+import com.estokio.domain.tenant.Tenant;
 import com.estokio.domain.user.RefreshToken;
 import com.estokio.domain.user.Usuario;
 import org.flywaydb.core.Flyway;
@@ -107,6 +109,12 @@ public abstract class PostgresTestBase {
         jdbi.installPlugin(new PostgresPlugin());
         jdbi.registerRowMapper(ConstructorMapper.factory(Usuario.class));
         jdbi.registerRowMapper(ConstructorMapper.factory(RefreshToken.class));
+        // Tenant/Plan: registrados aqui pela primeira vez na Fase 1 -- ate a sub-entrega
+        // 1a, nenhum teste consultava essas tabelas via .mapTo(...) num Jdbi de teste real
+        // (TestFixtures sempre usava .mapTo(UUID.class) em INSERT ... RETURNING id). Espelha
+        // exatamente DatabaseConfig#registrarMappers, usado pela aplicacao real.
+        jdbi.registerRowMapper(ConstructorMapper.factory(Tenant.class));
+        jdbi.registerRowMapper(ConstructorMapper.factory(Plan.class));
         return jdbi;
     }
 
