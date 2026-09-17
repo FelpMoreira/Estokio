@@ -40,8 +40,12 @@ export function LayoutPainelLoja() {
             <SidebarNavItem to="/loja" icone={<IconDashboard />}>
               Dashboard
             </SidebarNavItem>
-            <SidebarNavItem icone={<IconProdutos />}>Produtos</SidebarNavItem>
-            <SidebarNavItem icone={<IconEstoque />}>Estoque</SidebarNavItem>
+            <SidebarNavItem to="/loja/produtos" icone={<IconProdutos />}>
+              Produtos
+            </SidebarNavItem>
+            <SidebarNavItem to="/loja/estoque" icone={<IconEstoque />}>
+              Estoque
+            </SidebarNavItem>
             <SidebarNavItem icone={<IconPedidos />}>Pedidos</SidebarNavItem>
             <SidebarNavItem icone={<IconAlertas />}>Alertas</SidebarNavItem>
             <SidebarNavItem icone={<IconConfiguracoes />}>Configurações</SidebarNavItem>
