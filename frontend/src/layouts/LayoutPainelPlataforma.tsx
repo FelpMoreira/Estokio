@@ -31,7 +31,9 @@ export function LayoutPainelPlataforma() {
             <SidebarNavItem to="/plataforma" icone={<IconDashboard />}>
               Dashboard
             </SidebarNavItem>
-            <SidebarNavItem icone={<IconLojas />}>Lojas</SidebarNavItem>
+            <SidebarNavItem to="/plataforma/lojas" icone={<IconLojas />}>
+              Lojas
+            </SidebarNavItem>
             <SidebarNavItem icone={<IconPlanos />}>Planos</SidebarNavItem>
           </nav>
         </div>
